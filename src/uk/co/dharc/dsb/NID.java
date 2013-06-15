@@ -8,6 +8,7 @@ public class NID {
 	private static final int SPECIAL_TRUE = 1;
 	private static final int SPECIAL_FALSE = 2;
 	private static final int SPECIAL_SIZE = 3;
+	
 	public NID()
 	{
 		m_hasmac = false;
@@ -97,7 +98,48 @@ public class NID {
 	
 	public int pack(byte buf[])
 	{
-		return 0;
+		int count = 0;
+		
+		if (m_hasmac && m_persistent)
+		{
+			if (m_persistent)
+			{
+				buf[0] = 0x03;
+			}
+			else
+			{
+				buf[0] = 0x01;
+			}
+			count++;
+			for (int i=0; i<6; i++)
+			{
+				buf[i+1] = (byte)m_serial[i];
+			}
+			count += 6;
+			buf[count++] = (byte)(m_n >>> 24);
+			buf[count++] = (byte)(m_n >>> 16);
+			buf[count++] = (byte)(m_n >>> 8);
+			buf[count++] = (byte)(m_n);
+			return count;
+		}
+		else
+		{
+			buf[0] = 0x00;
+			switch(m_t)
+			{
+			case INTEGER: buf[1] = 1; break;
+			default: buf[1] = 0; break;
+			}
+			buf[2] = 0;
+			
+			//Now pack the value part
+			for (int i=0; i<8; i++)
+			{
+				buf[3+i] = (byte)(m_ll >>> ((7-i)*8));
+			}
+			
+			return 11;
+		}
 	}
 	
 	public int unpack(byte buf[])
