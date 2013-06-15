@@ -1,0 +1,29 @@
+<project>
+	<target name="clear">
+		<delete dir="build"/>
+	</target>
+	
+	<target name="compile">
+		<mkdir dir="build/classes"/>
+		<javac includeantruntime="false" srcdir="src/uk/co/dharc/dsb" destdir="build/classes"/>
+		<javac includeantruntime="false" srcdir="tests" destdir="build/classes"/>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<mkdir dir="build/jar"/>
+		<jar destfile="build/jar/DSB.jar" basedir="build/classes">
+		</jar>
+	</target>
+	
+	<target name="junit" depends="jar">
+		<junit printsummary="yes">
+			<classpath>
+				<path location="build/jar/DSB.jar"/>
+			</classpath>
+			
+			<batchtest fork="yes">
+				<fileset dir="tests" includes="*Test.java"/>
+			</batchtest>
+		</junit>
+	</target>
+</project>

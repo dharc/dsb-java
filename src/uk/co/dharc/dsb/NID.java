@@ -94,6 +94,8 @@ public class NID {
 		{
 			
 		}
+		
+		return new NID();
 	}
 	
 	public int pack(byte buf[])
